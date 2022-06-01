@@ -36,7 +36,7 @@ jobs:
           username: ${{ secrets.DEPLOY_SERVER_USERNAME }}
           key: ${{ secrets.DEPLOY_SERVER_KEY }}
           source: ${{ env.BUILD_SCRIPT_OUTPUT }}
-          target: ${{ env.DEPLOY_PATH }}/
+          target: ${{ secrets.DEPLOY_PATH }}/
           strip_components: 1
       - name: Print Info
         run: echo "Deployed at http://data-code-info.ru/"
