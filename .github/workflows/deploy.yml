@@ -25,4 +25,4 @@ jobs:
       - run: npm ci
       - run: npm run build
       # Deploy
-      - run: cd dist && rsync -e "ssh -i -p 5050 $HOME/.ssh/key -o StrictHostKeyChecking=no" --archive --compress --delete . boss@data-code-info.ru:/webapps/data-code-info--client/
+      - run: cd dist && rsync -e "ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no" --archive --compress --delete . boss@data-code-info.ru:/webapps/data-code-info--client/
