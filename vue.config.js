@@ -3,7 +3,7 @@ const path = require("path");
 
 module.exports = defineConfig({
   devServer: {
-    port: 80
+    port: 5000
   },
   transpileDependencies: true,
   lintOnSave: false,
