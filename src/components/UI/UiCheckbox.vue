@@ -47,6 +47,7 @@ export default {
   margin-bottom: 0px;
   position: relative;
   display: flex;
+  user-select: none;
   input {
     display: none;
   }

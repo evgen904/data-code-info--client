@@ -1,7 +1,7 @@
 <template>
   <div class="header">
     <div class="header--title">
-      <router-link to="/"> Шпаргалка по JS </router-link>
+      <router-link to="/"> Шпаргалка разработчика </router-link>
     </div>
     <div class="header--btn">
       <ui-button v-if="!isAuth" @click="auth" color="primary">Войти</ui-button>
@@ -30,12 +30,12 @@
               </li>
               <li>
                 <router-link :to="{ name: 'FolderView' }"
-                  >Редактирование категорий</router-link
+                  >Добавить/Удалить категорию</router-link
                 >
               </li>
               <li>
                 <router-link :to="{ name: 'PostView' }"
-                  >Редактирование постов</router-link
+                  >Добавить/Удалить пост</router-link
                 >
               </li>
               <li>

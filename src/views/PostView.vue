@@ -18,9 +18,19 @@
             placeholder="Название поста"
           />
         </div>
-        <div class="post--field">
-          <p>Категория для поста</p>
-          <ui-select v-model="selectedFolder" :options="folderList" />
+        <div class="folder">
+          <label for="folder-user">
+            <div class="post--field" :class="{'active': selectFolder === 'user'}">
+              <p>В свои категории <input type="radio" name="folderSelect" v-model="selectFolder" value="user" id="folder-user"></p>
+              <ui-select v-model="selectedFolderUser" :options="folderListUser" />
+            </div>
+          </label>
+          <label for="folder-all">
+            <div class="post--field" :class="{'active': selectFolder === 'all'}">
+              <p>В общие категории <input type="radio" name="folderSelect" v-model="selectFolder" value="all" id="folder-all"></p>
+              <ui-select v-model="selectedFolderAll" :options="folderListAll" />
+            </div>
+          </label>
         </div>
         <div class="post--field">
           <CkEditor @sendContent="getContent" :content="description" />
@@ -28,10 +38,7 @@
         <div class="post--field">
           <ui-checkbox v-model="showPost"> Отобразить пост </ui-checkbox>
         </div>
-        <div class="post--field">
-          <ui-checkbox v-model="showAllPost"> Пост виден всем </ui-checkbox>
-        </div>
-        <div class="post--status" v-if="showAllPost">
+        <div v-if="selectFolder === 'all' && idPost" class="post--status">
           Статус:
           <span class="red" v-if="status === 'moderation'">на модерации</span>
           <span class="green" v-else-if="status === 'active'">Виден всем</span>
@@ -39,8 +46,11 @@
         <div v-if="addWarning" class="post--field error">
           {{ addWarning }}
         </div>
+        <div v-if="addSuccess" class="post--field success">
+          Пост успешно добавлен
+        </div>
         <div class="post--field">
-          <ui-button type="click" color="success" @click="sendPost">
+          <ui-button type="click" color="success" :class="{'loading': loadingPost}" @click="sendPost">
             {{ btnSend }}
           </ui-button>
         </div>
@@ -51,12 +61,15 @@
           <ul>
             <transition-group name="list">
               <li
-                v-for="(item, index) in posts"
+                v-for="(item, index) in postsUser"
                 :key="item.id"
                 :class="{ active: item.id === $route.params.id }"
               >
                 <div class="post-name">
                   {{ item.title }}
+                  <div class="post-name--date">
+                    {{ item.date }}
+                  </div>
                 </div>
                 <div class="post-del">
                   <ui-button
@@ -96,6 +109,9 @@
               >
                 <div class="post-name">
                   {{ item.title }}
+                  <div class="post-name--date">
+                    {{ item.date }}
+                  </div>
                 </div>
                 <div class="post-del">
                   <ui-button
@@ -143,15 +159,19 @@ export default {
   },
   data() {
     return {
+      idPost: "",
       title: "",
       description: "",
-      selectedFolder: "0",
+      selectFolder: "user",
+      selectedFolderUser: "0",
+      selectedFolderAll: "0",
       showPost: true,
-      showAllPost: false,
       status: "moderation",
       addWarning: "",
-      posts: [],
+      addSuccess: false,
+      postsUser: [],
       postsModeration: [],
+      loadingPost: false,
     };
   },
   watch: {
@@ -171,6 +191,9 @@ export default {
     if (this.isAdmin) {
       this.loadPostsModeration();
     }
+    if (this.$route?.params?.id) {
+      this.idPost = this.$route.params.id
+    }
   },
   computed: {
     ...mapState("folders", ["foldersAll", "foldersUser"]),
@@ -185,7 +208,7 @@ export default {
     btnSend() {
       return this.isEdit ? "Сохранить" : "Добавить";
     },
-    folderList() {
+    folderListAll() {
       const list = [
         {
           value: "0",
@@ -200,6 +223,15 @@ export default {
           });
         });
       }
+      return list;
+    },
+    folderListUser() {
+      const list = [
+        {
+          value: "0",
+          text: "Выберите категорию",
+        },
+      ];
       if (this.foldersUser.length) {
         this.foldersUser.forEach((item) => {
           list.push({
@@ -232,9 +264,10 @@ export default {
               return {
                 id: item._id,
                 title: item.title,
+                date: new Date(item.date).toLocaleString(),
               };
             });
-            this.posts = posts;
+            this.postsUser = posts;
           }
         })
         .catch((err) => console.log(err));
@@ -249,6 +282,7 @@ export default {
                 return {
                   id: item._id,
                   title: item.title,
+                  date: new Date(item.date).toLocaleString(),
                 };
               });
             this.postsModeration = posts;
@@ -257,12 +291,13 @@ export default {
         .catch((err) => console.log(err));
     },
     sendPost() {
+      this.loadingPost = true
       const postData = {
         title: this.title,
         description: this.description,
         show: this.showPost,
-        showAll: this.showAllPost,
-        folder: this.selectedFolder,
+        showAll: this.selectFolder === "all" ? true : false,
+        folder: this.selectFolder === "all" ? this.selectedFolderAll : this.selectedFolderUser,
       };
       if (!this.isEdit) {
         this.addPost(postData)
@@ -271,11 +306,18 @@ export default {
               this.addWarning = res.data.message;
             } else {
               this.addWarning = "";
+              this.addSuccess = true;
+              this.title = "";
+              this.description = "";
+              this.selectedFolder = "0";
               this.initPosts();
+              this.idPost = res?.data?.postData?._id
             }
-            console.log(res, "res");
           })
-          .catch((err) => console.log(err));
+          .catch((err) => console.log(err))
+          .finally(() => {
+            this.loadingPost = false
+          })
       } else {
         postData._id = this.$route.params.id;
         this.setPost(postData)
@@ -287,7 +329,10 @@ export default {
             }
             console.log(res, "res");
           })
-          .catch((err) => console.log(err));
+          .catch((err) => console.log(err))
+          .finally(() => {
+            this.loadingPost = false
+          })
       }
     },
     editData(id) {
@@ -300,14 +345,19 @@ export default {
             this.title = res.data[0]["title"];
             this.description = res.data[0]["description"];
             this.status = res.data[0]["status"];
-            this.selectedFolder = res.data[0]["folder"];
             this.showPost = res.data[0]["show"];
-            this.showAllPost = res.data[0]["showAll"];
+            this.selectFolder = res.data[0]["showAll"] ? "all" : "user";
+            if (res.data[0]["showAll"]) {
+              this.selectedFolderAll = res.data[0]["folder"];
+            } else {
+              this.selectedFolderUser = res.data[0]["folder"];
+            }
           }
         })
         .catch((err) => console.log(err));
     },
     setPostBtn(id) {
+      this.idPost = id
       this.$router.push({
         name: "PostViewEdit",
         params: {
@@ -365,10 +415,36 @@ export default {
       h2 {
         margin-bottom: 20px;
       }
+      .folder {
+        display: flex;
+        flex-direction: row;
+        gap: 20px;
+        .post--field {
+          min-width: 200px;
+          input[type="radio"] {
+            margin: 1px 0 0 6px;
+            display: inline-block;
+            vertical-align: top;
+          }
+          select {
+            pointer-events: none;
+            opacity: .5;
+          }
+          &.active {
+            select {
+              pointer-events: all;
+              opacity: 1;
+            }
+          }
+        }
+      }
       &--field {
         margin-bottom: 14px;
         &.error {
           color: #cc0000;
+        }
+        &.success {
+          color: #4cae4c;
         }
         p {
           margin: 0;
@@ -410,9 +486,14 @@ export default {
             .post-name {
               width: 100%;
               display: flex;
-              align-items: center;
+              flex-direction: column;
+              align-items: flex-start;
               font-size: 18px;
               padding-left: 10px;
+              &--date {
+                padding-top: 4px;
+                font-size: 12px;
+              }
             }
             .post-del {
               margin-left: 10px;

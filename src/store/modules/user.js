@@ -53,7 +53,8 @@ const actions = {
   },
   async checkAuth({ commit }) {
     try {
-      const response = await axios.get(`https://data-code-info.ru/api/refresh`, {
+      const API_URL = process.env.NODE_ENV === "production" ? `${process.env.VUE_APP_ADDRESS}/api` : "http://localhost:5000/api";
+      const response = await axios.get(`${API_URL}/refresh`, {
         withCredentials: true,
       });
       localStorage.setItem("token", response.data.accessToken);

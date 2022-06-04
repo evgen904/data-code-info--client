@@ -132,6 +132,7 @@ export default {
     this.initFolders();
   },
   computed: {
+    ...mapState("user", ["user"]),
     ...mapGetters("user", ["isAdmin"]),
   },
   methods: {
@@ -162,34 +163,38 @@ export default {
       }
     },
     addFolderBtn() {
+      let nameFolder = cyrillicToTranslit().transform(
+        this.titleFolder.toLocaleLowerCase(),
+        "_"
+      );
       const addFolder = {
-        name: cyrillicToTranslit().transform(
-          this.titleFolder.toLocaleLowerCase(),
-          "_"
-        ),
+        name: `${nameFolder}_${this.user.id}`,
         title: this.titleFolder,
       };
-      this.addFolder(addFolder)
-        .then((res) => {
-          if (res?.data?.message) {
-            this.addWarning = res.data.message;
-          } else {
-            this.addWarning = "";
-          }
-          if (res?.data?.folderData?.name) {
-            this.titleFolder = "";
-            this.initFolders();
-          }
-        })
-        .catch((err) => console.log(err));
+      if (this.titleFolder) {
+        this.addFolder(addFolder)
+          .then((res) => {
+            if (res?.data?.message) {
+              this.addWarning = res.data.message;
+            } else {
+              this.addWarning = "";
+            }
+            if (res?.data?.folderData?.name) {
+              this.titleFolder = "";
+              this.initFolders();
+            }
+          })
+          .catch((err) => console.log(err));
+      }
     },
     setFolderBtn(id) {
       const folderEdit = this.folders.find((item) => item._id === id);
+      let nameFolder = cyrillicToTranslit().transform(
+        folderEdit.title.toLocaleLowerCase(),
+        "_"
+      );
       this.setFolder({
-        name: cyrillicToTranslit().transform(
-          folderEdit.title.toLocaleLowerCase(),
-          "_"
-        ),
+        name: `${nameFolder}_${this.user.id}`,
         title: folderEdit.title,
         isPublic: folderEdit.isPublic,
       })

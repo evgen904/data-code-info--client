@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const API_URL = "https://data-code-info.ru/api";
+export const API_URL = process.env.NODE_ENV === "production" ? `${process.env.VUE_APP_ADDRESS}/api` : "http://localhost:5000/api";
 
 const $api = axios.create({
   // withCredentials каждому запросу чтобы куки цыплялись
@@ -26,7 +26,7 @@ $api.interceptors.response.use(
     ) {
       originalRequest._isRetry = true;
       try {
-        const response = await axios.get(`https://data-code-info.ru/api/refresh`, {
+        const response = await axios.get(`${API_URL}/refresh`, {
           withCredentials: true,
         });
         localStorage.setItem("token", response.data.accessToken);

@@ -38,6 +38,7 @@ export default {
   border: 1px solid #ccc;
   background: #f0f0f0;
   transition: background 0.3s ease;
+  position: relative;
   &.basic {
     background: #f0f0f0;
     color: #000000;

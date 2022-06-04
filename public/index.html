@@ -6,7 +6,11 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <title><%= htmlWebpackPlugin.options.title %></title>
-    <script src="https://data-code-info.ru/ckeditor/ckeditor.js"></script>
+    <% if(process.env.NODE_ENV === 'production') { %>
+      <script src="<%= process.env.VUE_APP_ADDRESS %>/ckeditor/ckeditor.js"></script>
+    <% } else {%>
+      <script src="http://localhost:8080/ckeditor/ckeditor.js"></script>
+    <% } %>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/shades-of-purple.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
