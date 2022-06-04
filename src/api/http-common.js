@@ -26,7 +26,7 @@ $api.interceptors.response.use(
     ) {
       originalRequest._isRetry = true;
       try {
-        const response = await axios.get(`http://localhost:5000/api/refresh`, {
+        const response = await axios.get(`https://data-code-info.ru/api/refresh`, {
           withCredentials: true,
         });
         localStorage.setItem("token", response.data.accessToken);
