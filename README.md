@@ -1,4 +1,5 @@
-# pet-project
+# pet-project (MVP)
+https://data-code-info.ru/
 
 ## Project setup
 ```
