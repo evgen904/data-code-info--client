@@ -1,6 +1,6 @@
 <template>
   <transition appear name="modal" @after-enter="show = true">
-    <div class="ui-dialog" @click="show = false">
+    <div class="ui-dialog">
       <transition name="modal-content" @after-leave="$emit('close')">
         <div v-if="show" @click.stop class="ui-dialog--content">
           <div class="ui-dialog--close" @click="show = false"></div>

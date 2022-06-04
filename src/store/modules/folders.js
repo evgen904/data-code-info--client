@@ -38,7 +38,7 @@ const actions = {
   getFoldersAll({ commit }) {
     return Folders.getFoldersAll()
       .then((res) => {
-        if (res?.data) {
+        if (res?.data.length) {
           commit("setFoldersAll", res.data);
         }
         return res;
@@ -50,7 +50,7 @@ const actions = {
   getFoldersUser({ commit }) {
     return Folders.getFoldersUser()
       .then((res) => {
-        if (res?.data) {
+        if (res?.data.length) {
           commit("setFoldersUser", res.data);
         }
         return res;
