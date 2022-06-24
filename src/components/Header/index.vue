@@ -15,7 +15,8 @@
               <li v-if="!user.isActivated">
                 <div class="activate-email">
                   Подтвердите email для добавления постов, <br />
-                  ссылка для подтверждения отправлена на Ваш email
+                  ссылка для подтверждения отправлена на Ваш email <br>
+                  <span @click="sendMail">отправить повторно</span>
                 </div>
                 <hr />
               </li>
@@ -74,8 +75,8 @@
         {{ warningAuth }}
       </div>
       <div class="form-auth--btn">
-        <ui-button type="click" color="primary" @click="login">Войти</ui-button>
-        <ui-button type="click" color="success" @click="registration"
+        <ui-button type="click" color="primary" :class="{'loading': loadingLogin}" @click="login">Войти</ui-button>
+        <ui-button type="click" color="success" :class="{'loading': loadingRegistration}" @click="registration"
           >Регистрация</ui-button
         >
       </div>
@@ -97,10 +98,12 @@ export default {
       warningAuth: "",
       email: "",
       password: "",
+      loadingLogin: false,
+      loadingRegistration: false,
     };
   },
   methods: {
-    ...mapActions("user", ["userLogin", "userRegistration", "userLogout"]),
+    ...mapActions("user", ["userLogin", "userRegistration", "userLogout", "activationmail"]),
     ...mapActions("folders", ["getFoldersUser"]),
     ...mapMutations("folders", ["setFoldersUser"]),
     auth() {
@@ -111,6 +114,7 @@ export default {
         email: this.email,
         password: this.password,
       };
+      this.loadingLogin = true
       this.userLogin(dataUser)
         .then((res) => {
           if (res?.data?.message) {
@@ -123,13 +127,17 @@ export default {
           }
           this.getFoldersUser();
         })
-        .catch((err) => console.log(err));
+        .catch((err) => console.log(err))
+        .finally(() => {
+          this.loadingLogin = false
+        })
     },
     registration() {
       const dataUser = {
         email: this.email,
         password: this.password,
       };
+      this.loadingRegistration = true
       this.userRegistration(dataUser)
         .then((res) => {
           if (res?.data?.message) {
@@ -141,7 +149,10 @@ export default {
             this.modalVisible = false;
           }
         })
-        .catch((err) => console.log(err));
+        .catch((err) => console.log(err))
+        .finally(() => {
+          this.loadingRegistration = false
+        })
     },
     logout() {
       this.userLogout();
@@ -150,6 +161,9 @@ export default {
         name: "JsView",
       });
     },
+    sendMail() {
+      this.activationmail()
+    }
   },
 };
 </script>
@@ -250,6 +264,12 @@ export default {
           color: #cc0000;
           font-size: 14px;
           padding: 8px 20px;
+          span {
+            cursor: pointer;
+            display: inline-block;
+            margin-top: 10px;
+            color: #0025d9;
+          }
         }
         .type-user {
           color: #000;
