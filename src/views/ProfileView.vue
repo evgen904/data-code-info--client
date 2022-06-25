@@ -35,7 +35,7 @@
             </div>
             Перетащите картинку или нажмите
           </div>
-          <div class="img-user" v-if="userImage">
+          <div class="img-user" v-if="userImage.image_url">
             <img :src="userImage.image_url" alt="">
           </div>
         </div>

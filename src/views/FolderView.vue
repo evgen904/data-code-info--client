@@ -22,7 +22,7 @@
           >Добавить</ui-button
         >
       </div>
-      <div class="folder">
+      <div class="folder" v-if="foldersPublic.length || folders.length">
         <h2>Редактировать категории</h2>
         <template v-if="isAdmin && foldersPublic.length">
           <h3>Категории для всех</h3>

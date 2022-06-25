@@ -55,7 +55,7 @@
           </ui-button>
         </div>
       </div>
-      <div class="post">
+      <div class="post" v-if="postsUser.length">
         <h2>Редактирование постов</h2>
         <div class="post--list">
           <ul>
@@ -268,6 +268,8 @@ export default {
               };
             });
             this.postsUser = posts;
+          } else {
+            this.postsUser = []
           }
         })
         .catch((err) => console.log(err));

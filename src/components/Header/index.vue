@@ -165,6 +165,9 @@ export default {
       this.$router.push({
         name: "JsView",
       });
+      setTimeout(() => {
+        document.location.reload();
+      }, 100)
     },
     sendMail() {
       this.activationmail()

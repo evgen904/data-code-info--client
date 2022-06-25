@@ -97,8 +97,8 @@ const actions = {
 };
 
 const mutations = {
-  setFolders(state, value) {
-    state.folders = value;
+  setPosts(state, value) {
+    state.posts = value;
   },
 };
 
