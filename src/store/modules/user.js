@@ -78,6 +78,13 @@ const actions = {
       })
       .catch((err) => console.log(err, "activationmail"));
   },
+  setUserApi({ commit }, payload) {
+    return  Users.setUser(payload)
+      .then((res) => {
+        return res.data
+      })
+      .catch((err) => console.log(err, "setUser"));
+  },
 };
 
 const mutations = {

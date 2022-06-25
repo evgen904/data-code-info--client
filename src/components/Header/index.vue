@@ -27,6 +27,11 @@
                     {{ item }}
                   </span>
                 </div>
+                <div class="link-header">
+                  <router-link :to="{ name: 'ProfileView' }"
+                  >Редактировать профиль</router-link
+                  >
+                </div>
                 <hr />
               </li>
               <li>
@@ -248,7 +253,7 @@ export default {
       list-style: none;
       li {
         > a,
-        > span {
+        > span, .link-header > a {
           display: block;
           cursor: pointer;
           padding: 8px 20px;

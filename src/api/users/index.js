@@ -3,6 +3,7 @@ import login from "./login";
 import logout from "./logout";
 import getUsers from "./getUsers";
 import activationmail from "./activationmail";
+import setUser from "./setUser";
 
 export default {
   registration,
@@ -10,4 +11,5 @@ export default {
   logout,
   getUsers,
   activationmail,
+  setUser,
 };

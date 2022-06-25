@@ -32,6 +32,14 @@ const routes = [
     },
   },
   {
+    path: "/profile",
+    name: "ProfileView",
+    component: () => import("@/views/ProfileView"),
+    meta: {
+      middleware: [auth],
+    },
+  },
+  {
     path: "/post/:id",
     name: "PostViewEdit",
     component: () => import("@/views/PostView"),
