@@ -1,5 +1,12 @@
 <template>
   <div class="card">
+    <div class="user">
+      <div class="user--avatar"><img width="30" height="30" :src="avatar" alt=""></div>
+      <div class="user--login">{{ user }}</div>
+      <div class="user--date">
+        {{ datePost }}
+      </div>
+    </div>
     <div class="card--title">
       {{ dataPost.title }}
     </div>
@@ -15,6 +22,31 @@ export default {
       type: Object,
     },
   },
+  computed: {
+    datePost() {
+      return new Date(this.dataPost.date).toLocaleDateString(
+        "ru-RU",
+        {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric'
+        }
+      )
+    },
+    user() {
+      return this.dataPost?.user?.login || ""
+    },
+    avatar() {
+      if (this.dataPost?.user?.avatarUrl) {
+        return process.env.NODE_ENV === "production" ?
+          `${location.protocol}//${location.host}/static/${this.dataPost.user.avatarUrl}` :
+          `http://localhost:5000/static/${this.dataPost.user.avatarUrl}`
+      }
+      return require('assets/avatar.png')
+    }
+  }
 };
 </script>
 
@@ -42,6 +74,28 @@ export default {
       &:last-child {
         margin-bottom: 0;
       }
+    }
+  }
+  .user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    &--avatar {
+      width: 30px;
+      height: 30px;
+      img {
+        width: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+      }
+    }
+    &--login {
+      font-size: 14px;
+    }
+    &--date {
+      font-size: 14px;
+      color: #999;
     }
   }
 }

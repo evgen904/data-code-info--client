@@ -20,6 +20,24 @@
         </div>
         <div class="profile--field name">
           <div class="profile--title">
+            Ваш email
+            <span class="error" v-if="!user.isActivated">не подтвержден</span>
+            <span class="success" v-else>подтвержден</span>
+          </div>
+          <ui-input
+            :isBlock="true"
+            v-model.trim="userEmail"
+            type="text"
+            placeholder="Ваш email"
+            disabled="disabled"
+          />
+          <div class="profile--link" :class="{'loading':loadActivationmail}" v-if="!user.isActivated">
+            Подтвердите email для добавления постов,
+            ссылка для подтверждения отправлена на Ваш email <span @click="sendMail">отправить повторно</span>
+          </div>
+        </div>
+        <div class="profile--field name">
+          <div class="profile--title">
             Фото профиля
           </div>
           <div class="load-image">
@@ -35,9 +53,14 @@
             </div>
             Перетащите картинку или нажмите
           </div>
-          <div class="img-user" v-if="userImage.image_url">
-            <img :src="userImage.image_url" alt="">
-          </div>
+          <template v-if="userImage.image_url">
+            <div class="img-user">
+              <img :src="userImage.image_url" alt="">
+            </div>
+            <div v-if="false" class="img-user-del">
+              <span @click="removeAvatar" class="link">Удалить фото</span>
+            </div>
+          </template>
         </div>
         <div class="profile--field">
           <div class="warning" :class="{'error': !success, 'success': success}" v-if="warning">
@@ -66,6 +89,7 @@ export default {
   data() {
     return {
       userName: "",
+      userEmail: "",
       userImage: {
         userImage: ""
       },
@@ -73,6 +97,7 @@ export default {
       avatarUrl: "",
       warning: "",
       success: false,
+      loadActivationmail: false,
     }
   },
   computed: {
@@ -89,10 +114,12 @@ export default {
   methods: {
     ...mapActions("user", [
       "setUserApi",
+      "activationmail",
     ]),
     init() {
       if (this.user) {
         this.userName = this.user.nameUser
+        this.userEmail = this.user.email
         if (this.user.avatarUrl) {
           if (process.env.NODE_ENV === "production") {
             this.avatarUrl = `${location.protocol}//${location.host}/static/${this.user.avatarUrl}`
@@ -152,6 +179,19 @@ export default {
         })
         .catch(err => console.log(err))
     },
+    sendMail() {
+      this.loadActivationmail = true
+      this.activationmail()
+        .then(() => {})
+        .catch((err) => console.log(err))
+        .finally(() => {
+          this.loadActivationmail = false
+        })
+    },
+    removeAvatar() {
+      this.userImage.image_url = ""
+      this.sendImage = undefined
+    },
   }
 }
 </script>
@@ -191,6 +231,16 @@ export default {
         font-size: 14px;
         margin-bottom: 6px;
       }
+      &--link {
+        margin-top: 10px;
+        font-size: 14px;
+        margin-bottom: 6px;
+        position: relative;
+        span {
+          cursor: pointer;
+          color: #0025d9;
+        }
+      }
       .load-image {
         position: relative;
         border: 1px dashed #ccc;
@@ -221,6 +271,10 @@ export default {
           vertical-align: top;
           width: 100%;
         }
+      }
+      .img-user-del {
+        font-size: 14px;
+        margin-top: 10px;
       }
     }
   }

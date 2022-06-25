@@ -5,6 +5,7 @@
     class="ui-input"
     :class="{ block: isBlock }"
     :type="type"
+    :disabled="disabled"
   />
 </template>
 
@@ -21,6 +22,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    disabled: {
+      type: Boolean,
+      default: false,
+    }
   },
   methods: {
     updateInput(event) {
@@ -43,6 +48,9 @@ export default {
   &.block {
     display: block;
     width: 100%;
+  }
+  &[disabled] {
+    opacity: 0.8;
   }
 }
 </style>

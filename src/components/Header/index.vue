@@ -8,18 +8,11 @@
       <template v-else>
         <div class="menu-item">
           <div class="menu-item--name">
-            {{ user.email }}
+            {{ user.login }}
+            <img src="~assets/avatar.png" alt="">
           </div>
           <div class="menu-item--list">
             <ul>
-              <li v-if="!user.isActivated">
-                <div class="activate-email">
-                  Подтвердите email для добавления постов, <br />
-                  ссылка для подтверждения отправлена на Ваш email <br>
-                  <span @click="sendMail">отправить повторно</span>
-                </div>
-                <hr />
-              </li>
               <li>
                 <div class="type-user">
                   Тип пользователя:
@@ -62,10 +55,14 @@
     @close="modalVisible = false"
   >
     <template v-slot:header>
-      <h2>Вход</h2>
+      <h2 v-if="!isRegistration">Вход</h2>
+      <h2 v-else>Регистрация</h2>
     </template>
     <form class="form-auth" @submit.prevent>
       <div class="form-auth--field">
+        <ui-input :isBlock="true" v-model="login" placeholder="Логин" />
+      </div>
+      <div class="form-auth--field" v-if="isRegistration">
         <ui-input :isBlock="true" v-model="email" placeholder="email" />
       </div>
       <div class="form-auth--field">
@@ -80,10 +77,18 @@
         {{ warningAuth }}
       </div>
       <div class="form-auth--btn">
-        <ui-button type="click" color="primary" :class="{'loading': loadingLogin}" @click="login">Войти</ui-button>
-        <ui-button type="click" color="success" :class="{'loading': loadingRegistration}" @click="registration"
+        <template v-if="!isRegistration">
+          <ui-button type="click" color="primary" :class="{'loading': loadingLogin}" @click="loginUser">Войти</ui-button>
+          <ui-button type="click" color="success" :class="{'loading': loadingRegistration}" @click="isRegistration = true"
           >Регистрация</ui-button
-        >
+          >
+        </template>
+        <template v-else>
+          <ui-button type="click" color="primary" :class="{'loading': loadingLogin}" @click="isRegistration = false">Вход</ui-button>
+          <ui-button type="click" color="success" :class="{'loading': loadingRegistration}" @click="registration"
+          >Регистрация</ui-button
+          >
+        </template>
       </div>
     </form>
   </ui-modal>
@@ -101,22 +106,24 @@ export default {
     return {
       modalVisible: false,
       warningAuth: "",
+      isRegistration: false,
       email: "",
+      login: "",
       password: "",
       loadingLogin: false,
       loadingRegistration: false,
     };
   },
   methods: {
-    ...mapActions("user", ["userLogin", "userRegistration", "userLogout", "activationmail"]),
+    ...mapActions("user", ["userLogin", "userRegistration", "userLogout"]),
     ...mapActions("folders", ["getFoldersUser"]),
     ...mapMutations("folders", ["setFoldersUser"]),
     auth() {
       this.modalVisible = true;
     },
-    login() {
+    loginUser() {
       const dataUser = {
-        email: this.email,
+        login: this.login,
         password: this.password,
       };
       this.loadingLogin = true
@@ -139,6 +146,7 @@ export default {
     },
     registration() {
       const dataUser = {
+        login: this.login,
         email: this.email,
         password: this.password,
       };
@@ -165,13 +173,7 @@ export default {
       this.$router.push({
         name: "JsView",
       });
-      setTimeout(() => {
-        document.location.reload();
-      }, 100)
     },
-    sendMail() {
-      this.activationmail()
-    }
   },
 };
 </script>
@@ -239,6 +241,14 @@ export default {
     transition: 0.3s background ease;
     &:hover {
       background: #f0f0f0;
+    }
+    img {
+      display: inline-block;
+      vertical-align: middle;
+      margin-left: 10px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
     }
   }
   &--list {

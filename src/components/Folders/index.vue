@@ -59,6 +59,7 @@ export default {
   position: sticky;
   top: 0;
   li {
+    margin-bottom: 1px;
     a {
       display: block;
       padding: 10px 12px;
@@ -67,7 +68,7 @@ export default {
       font-size: 14px;
       background: #fff;
       transition: background 0.3s ease;
-      &:hover {
+      &:hover, &.router-link-active {
         background: #f9f9f9;
       }
     }

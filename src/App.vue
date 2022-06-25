@@ -61,6 +61,16 @@ nav {
     }
   }
 }
+.error {
+  color: #cc0000;
+}
+.success {
+  color: #4cae4c;
+}
+.link {
+  cursor: pointer;
+  color: #0025d9;
+}
 .loading {
   &.loading_dark {
     &:before {

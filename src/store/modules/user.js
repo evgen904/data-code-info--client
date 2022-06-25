@@ -72,9 +72,9 @@ const actions = {
       .catch((err) => console.log(err, "registration"));
   },
   activationmail({ commit }) {
-    Users.activationmail()
+    return Users.activationmail()
       .then((res) => {
-        console.log(res, "activationmail");
+        return res.data
       })
       .catch((err) => console.log(err, "activationmail"));
   },
