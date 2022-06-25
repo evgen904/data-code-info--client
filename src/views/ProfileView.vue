@@ -95,7 +95,7 @@ export default {
         this.userName = this.user.nameUser
         if (this.user.avatarUrl) {
           if (process.env.NODE_ENV === "production") {
-            this.avatarUrl = `${location.protocol}://${location.host}/static/${this.user.avatarUrl}`
+            this.avatarUrl = `${location.protocol}//${location.host}/static/${this.user.avatarUrl}`
           } else {
             this.avatarUrl = `http://localhost:5000/static/${this.user.avatarUrl}`
           }
