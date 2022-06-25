@@ -9,7 +9,7 @@
         <div class="menu-item">
           <div class="menu-item--name">
             {{ user.login }}
-            <img src="~assets/avatar.png" alt="">
+            <img :src="avatar" alt="">
           </div>
           <div class="menu-item--list">
             <ul>
@@ -101,6 +101,14 @@ export default {
   name: "Header",
   computed: {
     ...mapState("user", ["isAuth", "user"]),
+    avatar() {
+      if (this?.user?.avatarUrl) {
+        return process.env.NODE_ENV === "production" ?
+          `${location.protocol}//${location.host}/static/${this.user.avatarUrl}` :
+          `http://localhost:5000/static/${this.user.avatarUrl}`
+      }
+      return require('assets/avatar.png')
+    },
   },
   data() {
     return {
@@ -168,11 +176,14 @@ export default {
         })
     },
     logout() {
-      this.userLogout();
-      this.setFoldersUser([]);
-      this.$router.push({
-        name: "JsView",
-      });
+      this.userLogout()
+        .then(() => {
+          this.setFoldersUser([]);
+          this.$router.push({
+            name: "JsView",
+          });
+        })
+        .cache(err => console.log(err))
     },
   },
 };
