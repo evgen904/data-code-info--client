@@ -12,8 +12,8 @@ const routes = [
   },
   {
     path: "/",
-    name: "JsView",
-    component: () => import("@/views/JsView"),
+    name: "DashboardView",
+    component: () => import("@/views/DashboardView"),
   },
   {
     path: "/folder",

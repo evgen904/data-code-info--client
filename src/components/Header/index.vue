@@ -7,43 +7,50 @@
       <ui-button v-if="!isAuth" @click="auth" color="primary">Войти</ui-button>
       <template v-else>
         <div class="menu-item">
-          <div class="menu-item--name">
-            {{ user.login }}
-            <img :src="avatar" alt="">
+          <div class="menu-item--burger" :class="{'active': activeBurger}" @click="activeBurger = !activeBurger">
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
           </div>
-          <div class="menu-item--list">
-            <ul>
-              <li>
-                <div class="type-user">
-                  Тип пользователя:
-                  <span v-for="item in user.roles" :key="item.id">
+          <div class="menu-item--body" :class="{'active': activeBurger}">
+            <div class="menu-item--name">
+              {{ user.login }}
+              <img :src="avatar" alt="">
+            </div>
+            <div class="menu-item--list">
+              <ul>
+                <li>
+                  <div class="type-user">
+                    Тип пользователя:
+                    <span v-for="item in user.roles" :key="item.id">
                     {{ item }}
                   </span>
-                </div>
-                <div class="link-header">
-                  <router-link :to="{ name: 'ProfileView' }"
-                  >Редактировать профиль</router-link
-                  >
-                </div>
-                <hr />
-              </li>
-              <li>
-                <router-link :to="{ name: 'FolderView' }"
+                  </div>
+                  <div class="link-header">
+                    <router-link :to="{ name: 'ProfileView' }"
+                    >Редактировать профиль</router-link
+                    >
+                  </div>
+                  <hr />
+                </li>
+                <li>
+                  <router-link :to="{ name: 'FolderView' }"
                   >Добавить/Удалить категорию</router-link
-                >
-              </li>
-              <li>
-                <router-link :to="{ name: 'PostView' }"
+                  >
+                </li>
+                <li>
+                  <router-link :to="{ name: 'PostView' }"
                   >Добавить/Удалить пост</router-link
-                >
-              </li>
-              <li>
-                <hr />
-              </li>
-              <li>
-                <span @click="logout">Выйти</span>
-              </li>
-            </ul>
+                  >
+                </li>
+                <li>
+                  <hr />
+                </li>
+                <li>
+                  <span @click="logout">Выйти</span>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </template>
@@ -110,6 +117,11 @@ export default {
       return require('assets/avatar.png')
     },
   },
+  watch: {
+    isAuth() {
+      this.activeBurger = false
+    },
+  },
   data() {
     return {
       modalVisible: false,
@@ -120,6 +132,7 @@ export default {
       password: "",
       loadingLogin: false,
       loadingRegistration: false,
+      activeBurger: false,
     };
   },
   methods: {
@@ -180,10 +193,9 @@ export default {
         .then(() => {
           this.setFoldersUser([]);
           this.$router.push({
-            name: "JsView",
+            name: "DashboardView",
           });
         })
-        .cache(err => console.log(err))
     },
   },
 };
@@ -197,11 +209,24 @@ export default {
   grid-template-columns: 1fr minmax(100px, 640px) minmax(100px, 600px) 1fr;
   grid-template-areas: ". title btn .";
   margin-bottom: 20px;
+  @media all and (max-width: 640px) {
+    margin-bottom: 0;
+    grid-template-columns: minmax(180px, 640px) minmax(100px, 600px);
+    grid-template-areas: "title btn";
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0px 2px 4px rgba(0,0,0,.1);
+  }
   &--title {
     grid-area: title;
     align-self: center;
     font-size: 20px;
     font-weight: bold;
+    @media all and (max-width: 640px) {
+      font-size: 15px;
+      padding-left: 20px;
+    }
     a {
       color: #000000;
       text-decoration: none;
@@ -213,6 +238,9 @@ export default {
     align-self: center;
     .ui-btn {
       margin-left: 10px;
+      @media all and (max-width: 640px) {
+        margin-right: 10px;
+      }
     }
   }
 }
@@ -242,7 +270,64 @@ export default {
   }
 }
 .menu-item {
-  position: relative;
+  @media all and (min-width: 640px) {
+    position: relative;
+  }
+  &--burger {
+    display: none;
+    width: 60px;
+    height: 60px;
+    padding: 17px 14px 20px 14px;
+    flex-wrap: wrap;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    @media all and (max-width: 640px) {
+      display: flex;
+    }
+    .line {
+      height: 4px;
+      width: 45px;
+      background: #5e5e5e;
+      margin: 3px auto;
+      transition: all 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    &.active {
+      outline-style: none;
+      .line {
+        &:nth-child(1) {
+          transform: rotate(45deg) translate(8px, 8px);
+        }
+        &:nth-child(2) {
+          visibility: hidden;
+        }
+        &:nth-child(3) {
+          transform: rotate(-45deg) translate(6px, -6px);
+        }
+      }
+    }
+  }
+  &--body {
+    @media all and (max-width: 640px) {
+      display: none;
+      position: absolute;
+      right: 0;
+      left: 0;
+      top: 100%;
+      background: #fff;
+      border: 1px solid #ccc;
+      z-index: 100;
+      box-shadow: 0px 5px 10px rgba(0,0,0,.2);
+      .menu-item--list {
+        display: block;
+        position: relative;
+        width: 100%;
+      }
+    }
+    &.active {
+      display: block;
+    }
+  }
   &--name {
     height: 60px;
     display: flex;
@@ -250,8 +335,13 @@ export default {
     padding: 0 20px;
     cursor: pointer;
     transition: 0.3s background ease;
+    @media all and (max-width: 640px) {
+      border-bottom: 1px solid #ccc;
+    }
     &:hover {
-      background: #f0f0f0;
+      @media all and (min-width: 640px) {
+        background: #f0f0f0;
+      }
     }
     img {
       display: inline-block;
@@ -271,6 +361,9 @@ export default {
     background: #fff;
     border: 1px solid #ccc;
     z-index: 1000;
+    @media all and (max-width: 640px) {
+      border: none;
+    }
     ul {
       padding: 10px 0;
       margin: 0;
@@ -317,7 +410,9 @@ export default {
   }
   &:hover {
     .menu-item--name {
-      background: #f0f0f0;
+      @media all and (min-width: 640px) {
+        background: #f0f0f0;
+      }
     }
     .menu-item--list {
       display: block;

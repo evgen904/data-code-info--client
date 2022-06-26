@@ -4,7 +4,7 @@ export default function auth({ next, store }) {
     !localStorage.getItem("token")
   ) {
     return next({
-      name: "JsView",
+      name: "DashboardView",
     });
   }
 
