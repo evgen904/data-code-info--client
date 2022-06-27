@@ -2,9 +2,11 @@
   <div class="card">
     <div class="user">
       <div class="user--avatar"><img width="30" height="30" :src="avatar" alt=""></div>
-      <div class="user--login">{{ user }}</div>
-      <div class="user--date">
-        {{ datePost }}
+      <div class="user--info">
+        <div class="user--login">{{ user }}</div>
+        <div class="user--date">
+          {{ datePost }}
+        </div>
       </div>
     </div>
     <div class="card--title">
@@ -81,6 +83,12 @@ export default {
     align-items: center;
     gap: 10px;
     margin-bottom: 20px;
+    &--info {
+      display: flex;
+      @media all and (max-width: 640px) {
+        flex-direction: column;
+      }
+    }
     &--avatar {
       width: 30px;
       height: 30px;
@@ -92,6 +100,10 @@ export default {
     }
     &--login {
       font-size: 14px;
+      margin-right: 10px;
+      @media all and (max-width: 640px) {
+        margin-bottom: 2px;
+      }
     }
     &--date {
       font-size: 14px;
