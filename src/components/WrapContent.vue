@@ -29,7 +29,7 @@ export default {
     grid-template-columns: 1fr 240px 20px minmax(100px, 980px) 1fr;
     grid-template-areas: ". sidebar . content .";
     @media all and (max-width: 640px) {
-      grid-template-columns: 1fr;
+      grid-template-columns: 100%;
       grid-template-areas: "sidebar"
       "content";
     }
