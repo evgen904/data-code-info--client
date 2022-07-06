@@ -11,6 +11,13 @@ export default {
   methods: {
     ...mapActions("user", ["checkAuth"]),
   },
+  watch: {
+    $route(val) {
+      if (window.ym) {
+        ym(89166554,'hit',val.path)
+      }
+    },
+  },
   computed: {
     ...mapState("user", ["isAuth"]),
   },
