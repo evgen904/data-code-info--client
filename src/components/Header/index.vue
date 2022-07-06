@@ -141,6 +141,9 @@ export default {
     ...mapMutations("folders", ["setFoldersUser"]),
     auth() {
       this.modalVisible = true;
+      if (window.ym) {
+        ym(89166554,'reachGoal','login')
+      }
     },
     loginUser() {
       const dataUser = {
@@ -191,9 +194,6 @@ export default {
     logout() {
       this.userLogout()
         .then(() => {
-          if (window.ym) {
-            ym(89166554,'reachGoal','login')
-          }
           this.setFoldersUser([]);
           this.$router.push({
             name: "DashboardView",
