@@ -2,8 +2,8 @@
   <transition appear name="modal" @after-enter="show = true">
     <div class="ui-dialog">
       <transition name="modal-content" @after-leave="$emit('close')">
-        <div v-if="show" @click.stop class="ui-dialog--content">
-          <div class="ui-dialog--close" @click="show = false"></div>
+        <div v-if="show" @click.stop class="ui-dialog--content" data-testid="ui-dialog--content">
+          <div class="ui-dialog--close" @click="show = false" data-testid="ui-dialog--close"></div>
           <div v-if="!!this.$slots['header']" class="ui-dialog--title">
             <slot name="header"></slot>
           </div>
