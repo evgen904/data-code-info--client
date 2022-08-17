@@ -10,17 +10,9 @@
   </div>
 </template>
 
-<script>
-import Header from "@/components/Header";
-import Folders from "@/components/Folders";
-
-export default {
-  name: "WrapContent",
-  components: {
-    Header,
-    Folders,
-  }
-}
+<script setup>
+  import Header from "@/components/Header";
+  import Folders from "@/components/Folders";
 </script>
 
 <style lang="scss" scoped>

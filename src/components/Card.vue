@@ -16,40 +16,41 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "Card",
-  props: {
-    dataPost: {
-      type: Object,
-    },
-  },
-  computed: {
-    datePost() {
-      return new Date(this.dataPost.date).toLocaleDateString(
-        "ru-RU",
-        {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-          hour: 'numeric',
-          minute: 'numeric'
-        }
-      )
-    },
-    user() {
-      return this.dataPost?.user?.login || ""
-    },
-    avatar() {
-      if (this.dataPost?.user?.avatarUrl) {
-        return process.env.NODE_ENV === "production" ?
-          `${location.protocol}//${location.host}/static/${this.dataPost.user.avatarUrl}` :
-          `http://localhost:5000/static/${this.dataPost.user.avatarUrl}`
+<script setup>
+  import { computed } from "vue";
+  const props = defineProps({
+    dataPost: Object
+  })
+
+  const datePost = computed(() => {
+    return new Date(props.dataPost.date).toLocaleDateString(
+      "ru-RU",
+      {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric'
       }
-      return require('assets/avatar.png')
+    )
+  });
+  const user = computed(() => {
+    return props.dataPost?.user?.login || ""
+  });
+  const avatar = computed(() => {
+    if (props.dataPost?.user?.avatarUrl) {
+      return process.env.NODE_ENV === "production" ?
+        `${location.protocol}//${location.host}/static/${props.dataPost.user.avatarUrl}` :
+        `http://localhost:5000/static/${props.dataPost.user.avatarUrl}`
     }
-  }
-};
+    return require('assets/avatar.png')
+  });
+
+  defineExpose({
+    datePost,
+    user,
+    avatar,
+  })
 </script>
 
 <style lang="scss" scoped>

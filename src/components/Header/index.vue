@@ -101,107 +101,121 @@
   </ui-modal>
 </template>
 
-<script>
-import { mapActions, mapState, mapMutations } from "vuex";
+<script setup>
+  import { ref, computed, watch, onMounted } from "vue";
+  import { useStore } from "vuex";
+  import { useRouter } from 'vue-router';
 
-export default {
-  name: "Header",
-  computed: {
-    ...mapState("user", ["isAuth", "user"]),
-    avatar() {
-      if (this?.user?.avatarUrl) {
-        return process.env.NODE_ENV === "production" ?
-          `${location.protocol}//${location.host}/static/${this.user.avatarUrl}` :
-          `http://localhost:5000/static/${this.user.avatarUrl}`
-      }
-      return require('assets/avatar.png')
-    },
-  },
-  watch: {
-    isAuth() {
-      this.activeBurger = false
-    },
-  },
-  data() {
-    return {
-      modalVisible: false,
-      warningAuth: "",
-      isRegistration: false,
-      email: "",
-      login: "",
-      password: "",
-      loadingLogin: false,
-      loadingRegistration: false,
-      activeBurger: false,
+  const store = useStore();
+  const router = useRouter();
+
+  const modalVisible = ref(false);
+  const loadingLogin = ref(false);
+  const loadingRegistration = ref(false);
+  const activeBurger = ref(false);
+  const isRegistration = ref(false);
+  const warningAuth = ref("");
+  const email = ref("");
+  const login = ref("");
+  const password = ref("");
+
+  // store state
+  const isAuth = computed(() => store.state.user.isAuth);
+  const user = computed(() => store.state.user.user);
+
+  const avatar = computed(() => {
+    if (user?.avatarUrl) {
+      return process.env.NODE_ENV === "production" ?
+        `${location.protocol}//${location.host}/static/${user.avatarUrl}` :
+        `http://localhost:5000/static/${user.avatarUrl}`
+    }
+    return require('assets/avatar.png')
+  })
+
+  const auth = () => {
+    modalVisible.value = true;
+    if (window.ym) {
+      ym(89166554,'reachGoal','login')
+    }
+  }
+
+  const loginUser = () => {
+    const dataUser = {
+      login: login.value,
+      password: password.value,
     };
-  },
-  methods: {
-    ...mapActions("user", ["userLogin", "userRegistration", "userLogout"]),
-    ...mapActions("folders", ["getFoldersUser"]),
-    ...mapMutations("folders", ["setFoldersUser"]),
-    auth() {
-      this.modalVisible = true;
-      if (window.ym) {
-        ym(89166554,'reachGoal','login')
-      }
-    },
-    loginUser() {
-      const dataUser = {
-        login: this.login,
-        password: this.password,
-      };
-      this.loadingLogin = true
-      this.userLogin(dataUser)
-        .then((res) => {
-          if (res?.data?.message) {
-            this.warningAuth = res.data.message;
-          } else {
-            this.warningAuth = "";
-          }
-          if (res?.data?.accessToken) {
-            this.modalVisible = false;
-          }
-          this.getFoldersUser();
-        })
-        .catch((err) => console.log(err))
-        .finally(() => {
-          this.loadingLogin = false
-        })
-    },
-    registration() {
-      const dataUser = {
-        login: this.login,
-        email: this.email,
-        password: this.password,
-      };
-      this.loadingRegistration = true
-      this.userRegistration(dataUser)
-        .then((res) => {
-          if (res?.data?.message) {
-            this.warningAuth = res.data.message;
-          } else {
-            this.warningAuth = "";
-          }
-          if (res?.data?.accessToken) {
-            this.modalVisible = false;
-          }
-        })
-        .catch((err) => console.log(err))
-        .finally(() => {
-          this.loadingRegistration = false
-        })
-    },
-    logout() {
-      this.userLogout()
-        .then(() => {
-          this.setFoldersUser([]);
-          this.$router.push({
-            name: "DashboardView",
-          });
-        })
-    },
-  },
-};
+    loadingLogin.value = true
+    store.dispatch("user/userLogin", dataUser)
+      .then((res) => {
+        if (res?.data?.message) {
+          warningAuth.value = res.data.message;
+        } else {
+          warningAuth.value = "";
+        }
+        if (res?.data?.accessToken) {
+          modalVisible.value = false;
+        }
+        store.dispatch("folders/getFoldersUser")
+      })
+      .catch((err) => console.log(err))
+      .finally(() => {
+        loadingLogin.value = false
+      })
+  }
+
+  const registration = () => {
+    const dataUser = {
+      login: login.value,
+      email: email.value,
+      password: password.value,
+    };
+    loadingRegistration.value = true
+    store.dispatch("user/userRegistration", dataUser)
+      .then((res) => {
+        if (res?.data?.message) {
+          warningAuth.value = res.data.message;
+        } else {
+          warningAuth.value = "";
+        }
+        if (res?.data?.accessToken) {
+          modalVisible.value = false;
+        }
+      })
+      .catch((err) => console.log(err))
+      .finally(() => {
+        loadingRegistration.value = false
+      })
+  }
+
+  const logout = () => {
+    store.dispatch("user/userLogout")
+      .then(() => {
+        store.commit("folders/setFoldersUser", [])
+        router.push({
+          name: "DashboardView",
+        });
+      })
+  }
+
+  watch(isAuth, () => {
+    activeBurger.value = false
+  })
+
+  defineExpose({
+    avatar,
+    activeBurger,
+    user,
+    modalVisible,
+    warningAuth,
+    loadingLogin,
+    loadingRegistration,
+    loginUser,
+    registration,
+    isRegistration,
+    login,
+    email,
+    password,
+  })
 </script>
 
 <style lang="scss" scoped>

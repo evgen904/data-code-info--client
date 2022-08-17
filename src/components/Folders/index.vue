@@ -32,25 +32,22 @@
   </div>
 </template>
 
-<script>
-import { mapActions, mapState } from "vuex";
+<script setup>
+  import { computed, onMounted } from "vue";
+  import { useStore } from "vuex";
 
-export default {
-  name: "Folder",
-  computed: {
-    ...mapState("user", ["isAuth"]),
-    ...mapState("folders", ["foldersAll", "foldersUser"]),
-  },
-  methods: {
-    ...mapActions("folders", ["getFoldersAll", "getFoldersUser"]),
-  },
-  mounted() {
-    this.getFoldersAll();
-    if (this.isAuth) {
-      this.getFoldersUser();
+  // store state
+  const store = useStore();
+  const isAuth = computed(() => store.state.user.isAuth);
+  const foldersAll = computed(() => store.state.folders.foldersAll);
+  const foldersUser = computed(() => store.state.folders.foldersUser);
+
+  onMounted(() => {
+    store.dispatch("folders/getFoldersAll")
+    if (isAuth.value) {
+      store.dispatch("folders/getFoldersUser")
     }
-  },
-};
+  });
 </script>
 
 <style lang="scss" scoped>
