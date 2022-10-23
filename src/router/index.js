@@ -16,6 +16,11 @@ const routes = [
     component: () => import("@/views/DashboardView"),
   },
   {
+    path: "/test-render",
+    name: "TestRender",
+    component: () => import("@/views/TestRender"),
+  },
+  {
     path: "/folder",
     name: "FolderView",
     component: () => import("@/views/FolderView"),
