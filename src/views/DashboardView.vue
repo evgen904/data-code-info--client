@@ -10,6 +10,9 @@
       Также есть общий список категорий, который можно пополнять снипетами-статьями <br>
       (публикуются после модерации админом)
     </p>
+    <p>
+      <router-link to="/test-render">test render</router-link>
+    </p>
   </WrapContent>
 </template>
 

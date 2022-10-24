@@ -1,6 +1,12 @@
 <template>
   <div class="wrap-page">
+    <router-link to="/">back</router-link>
+    <br><br>
     <h1>Test render</h1>
+    <button @click="counter--">-</button>
+    <span style="padding: 0 10px;"> {{ counter }} </span>
+    <button @click="counter++">+</button>
+    <br><br>
     <ul class="list-gal">
       <li v-for="item in list" :key="item.id">
         <div class="title">
@@ -21,7 +27,8 @@ export default {
   name: "TestRender",
   data() {
     return {
-      list: []
+      list: [],
+      counter: 0
     }
   },
   mounted() {
