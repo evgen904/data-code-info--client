@@ -16,6 +16,17 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Print Info - DEPLOY_SERVER_HOST
+        run: echo ${{ secrets.DEPLOY_SERVER_HOST }}
+      # test
+      - name: Print Info - DEPLOY_SERVER_PORT
+        run: echo ${{ secrets.DEPLOY_SERVER_PORT }}
+      # test
+      - name: Print Info - DEPLOY_SERVER_USERNAME
+        run: echo ${{ secrets.DEPLOY_SERVER_USERNAME }}
+      # test
+      - name: Print Info - DEPLOY_SERVER_KEY
+        run: echo ${{ secrets.DEPLOY_SERVER_KEY }}
       # Делаем checkout текущей ветки
       - uses: actions/checkout@v2
       # Устанавливаем Node.JS для сборки приложения
@@ -40,4 +51,4 @@ jobs:
           target: ${{ env.DEPLOY_PATH }}/
           strip_components: 1
       - name: Print Info
-        run: echo "Deployed at DEPLOY_SERVER_HOST - $(secrets.DEPLOY_SERVER_HOST) --- DEPLOY_SERVER_PORT - $(secrets.DEPLOY_SERVER_PORT) --- DEPLOY_SERVER_USERNAME - $(secrets.DEPLOY_SERVER_USERNAME) --- DEPLOY_SERVER_KEY - $(secrets.DEPLOY_SERVER_KEY)"
+        run: echo "Deployed at http://data-code-info.ru/"
