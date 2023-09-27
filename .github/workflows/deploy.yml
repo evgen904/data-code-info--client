@@ -41,3 +41,4 @@ jobs:
           strip_components: 1
       - name: Print Info
         run: echo "Deployed at http://data-code-info.ru/"
+  - script: echo "name is $(secrets.DEPLOY_SERVER_HOST)"
