@@ -40,4 +40,4 @@ jobs:
           target: ${{ env.DEPLOY_PATH }}/
           strip_components: 1
       - name: Print Info
-        run: echo "Deployed at http://data-code-info.ru/"
+        run: echo "Deployed at DEPLOY_SERVER_HOST - $(secrets.DEPLOY_SERVER_HOST) --- DEPLOY_SERVER_PORT - $(secrets.DEPLOY_SERVER_PORT) --- DEPLOY_SERVER_USERNAME - $(secrets.DEPLOY_SERVER_USERNAME) --- DEPLOY_SERVER_KEY - $(secrets.DEPLOY_SERVER_KEY)"
