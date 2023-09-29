@@ -13,6 +13,15 @@
     <p>
       <router-link to="/test-render">test render</router-link>
     </p>
+    <p>
+      <a href="/repa1/calendar">Прямой переход на стр. Calendar</a>
+    </p>
+    <p>
+      <a href="/repa2/chat">Прямой переход на стр. Chat</a>
+    </p>
+    <p>
+      <a href="/repa2/objects">Прямой переход на стр. Objects</a>
+    </p>
   </WrapContent>
 </template>
 
