@@ -22,6 +22,10 @@
     <p>
       <a href="/repa2/objects">Прямой переход на стр. Objects</a>
     </p>
+    <br>
+    <p>
+      <router-link to="/calendar">module federation - Calendar</router-link>
+    </p>
   </WrapContent>
 </template>
 

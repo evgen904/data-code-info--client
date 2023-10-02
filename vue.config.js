@@ -21,6 +21,12 @@ const pluginsWebpack = process.env.NODE_ENV === "production" ? [
     })
   ] : [];
 
+
+let remotesCalendar =
+  process.env.NODE_ENV === "production"
+    ? "http://data-code-info.ru/"
+    : "http://localhost:8080";
+
 module.exports = defineConfig({
   devServer: {
     port: 5000
@@ -34,6 +40,15 @@ module.exports = defineConfig({
     );
     config.resolve.alias.set("@", path.resolve(__dirname, "src/"));
     config.resolve.alias.set("assets", path.resolve(__dirname, "src/assets"));
+    config
+      .plugin("module-federation-plugin")
+      .use(require("webpack").container.ModuleFederationPlugin, [
+        {
+          remotes: {
+            calendar: `calendar@${remotesCalendar}/remoteEntry.js`,
+          },
+        },
+      ]);
   },
   configureWebpack: {
     plugins: pluginsWebpack,

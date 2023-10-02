@@ -53,6 +53,11 @@ const routes = [
     },
   },
   {
+    path: "/calendar",
+    name: "CalendarView",
+    component: () => import("@/views/CalendarView"),
+  },
+  {
     path: "/posts/",
     name: "PostsView",
     component: () => import("@/views/PostsView"),
