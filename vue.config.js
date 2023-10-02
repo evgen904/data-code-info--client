@@ -24,7 +24,7 @@ const pluginsWebpack = process.env.NODE_ENV === "production" ? [
 
 let remotesCalendar =
   process.env.NODE_ENV === "production"
-    ? "https://www.data-code-info.ru"
+    ? "https://www.data-code-info.ru/repa1"
     : "http://localhost:8080";
 
 module.exports = defineConfig({
