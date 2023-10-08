@@ -54,7 +54,7 @@ module.exports = defineConfig({
         name: "app_general",
         filename: "remoteEntry.js",
         remotes: {
-          calendar: `calendar@${remotesCalendar}/remoteEntry.js`,
+          calendar: `calendar@${remotesCalendar}/js/remoteEntry.js`,
         },
         shared: {
           vue: {
